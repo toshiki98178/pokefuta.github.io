@@ -1,243 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>地域フォルダ</title>
+<title>フォルダ管理</title>
+
 <style>
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont;
-  background:#f2f2f7;
+    font-family: sans-serif;
+    margin:0;
+    padding:10px;
+    background:#f5f5f5;
 }
-.header{
-  position:sticky;
-  top:0;
-  background:white;
-  padding:15px;
-  font-weight:600;
-  border-bottom:1px solid #ddd;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.header-right{
-  display:flex;
-  gap:8px;
-}
-.list{
-  background:white;
-}
-.item{
-  padding:16px;
-  border-bottom:1px solid #eee;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.item:active{
-  background:#e5e5ea;
-}
+
 button{
-  background:#007aff;
-  color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:8px;
+    padding:10px;
+    margin:5px 0;
+    width:100%;
+    font-size:16px;
 }
-button.hidden{
-  display:none;
+
+.folder{
+    background:white;
+    padding:10px;
+    margin:5px 0;
+    border-radius:8px;
 }
-.back{
-  color:#007aff;
-  background:none;
+
+.subfolder{
+    background:#e3f2fd;
+    padding:8px;
+    margin:5px 0 5px 20px;
+    border-radius:8px;
 }
-.delete-btn{
-  background:#ff3b30;
-}
+
 img{
-  width:60px;
-  height:60px;
-  object-fit:cover;
-  border-radius:8px;
+    width:100%;
+    margin-top:5px;
+    border-radius:6px;
+}
+
+.hidden{
+    display:none;
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <button class="back" onclick="goBack()">←</button>
-  <div id="title">日本</div>
-  <div class="header-right">
-    <button id="photoBtn" onclick="triggerPhoto()">📷</button>
-    <button id="addBtn" onclick="addFolder()">＋</button>
-  </div>
-</div>
+<h2>都道府県フォルダ</h2>
 
-<div class="list" id="list"></div>
+<div id="folderArea"></div>
 
-<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="addImage(event)">
+<button onclick="addPrefecture()">都道府県を追加</button>
+
+<input type="file" id="imageInput" accept="image/*" class="hidden">
 
 <script>
-let stack=[];
-let data=JSON.parse(localStorage.getItem("folderData"))||createInitialData();
-let current=data;
+let selectedSubFolder = null;
 
-function createInitialData(){
-  const structure={
-    "北海道・東北":["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県"],
-    "関東":["茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"],
-    "中部":["新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県"],
-    "近畿":["三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"],
-    "中国・四国":["鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県"],
-    "九州・沖縄":["福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
-  };
+// ---------------------
+// 都道府県追加
+// ---------------------
+function addPrefecture(){
+    const name = prompt("都道府県名を入力");
+    if(!name) return;
 
-  let root={name:"日本",children:[],images:[],locked:true,allowImage:false};
-
-  for(let region in structure){
-    let regionFolder={name:region,children:[],images:[],locked:true,allowImage:false};
-
-    structure[region].forEach(pref=>{
-      regionFolder.children.push({
-        name:pref,
-        children:[],
-        images:[],
-        locked:false,
-        allowImage:false
-      });
-    });
-
-    root.children.push(regionFolder);
-  }
-  return root;
+    const div = document.createElement("div");
+    div.className = "folder";
+    div.innerHTML = `
+        <strong>${name}</strong>
+        <button onclick="addSubFolder(this)">サブフォルダ追加</button>
+        <div class="subArea"></div>
+    `;
+    document.getElementById("folderArea").appendChild(div);
 }
 
-function render(){
-  document.getElementById("title").innerText=current.name;
+// ---------------------
+// サブフォルダ追加
+// ---------------------
+function addSubFolder(btn){
+    const name = prompt("サブフォルダ名を入力");
+    if(!name) return;
 
-  const addBtn=document.getElementById("addBtn");
-  const photoBtn=document.getElementById("photoBtn");
+    const sub = document.createElement("div");
+    sub.className = "subfolder";
+    sub.innerHTML = `
+        <span>${name}</span>
+        <button onclick="addPhoto(this)">写真</button>
+        <div class="imageArea"></div>
+    `;
 
-  addBtn.classList.toggle("hidden", current.locked);
-  photoBtn.classList.toggle("hidden", !current.allowImage);
+    // 🔴 長押し削除（1秒）
+    let pressTimer;
+    sub.addEventListener("touchstart", startPress);
+    sub.addEventListener("mousedown", startPress);
 
-  let list=document.getElementById("list");
-  list.innerHTML="";
+    sub.addEventListener("touchend", cancelPress);
+    sub.addEventListener("mouseup", cancelPress);
+    sub.addEventListener("mouseleave", cancelPress);
 
-  current.children?.forEach((folder,index)=>{
-    let div=document.createElement("div");
-    div.className="item";
-
-    let left=document.createElement("span");
-    left.textContent=folder.name;
-
-    let right=document.createElement("div");
-    right.style.display="flex";
-    right.style.gap="8px";
-
-    let arrow=document.createElement("span");
-    arrow.textContent=">";
-
-    right.appendChild(arrow);
-
-    if(!folder.locked){
-      let del=document.createElement("button");
-      del.textContent="削除";
-      del.className="delete-btn";
-      del.onclick=(e)=>{
-        e.stopPropagation();
-        if(confirm("このフォルダを削除しますか？")){
-          current.children.splice(index,1);
-          save();
-          render();
-        }
-      };
-      right.appendChild(del);
+    function startPress(){
+        pressTimer = setTimeout(()=>{
+            if(confirm("このサブフォルダを削除しますか？")){
+                sub.remove();
+            }
+        },1000);
     }
 
-    div.appendChild(left);
-    div.appendChild(right);
+    function cancelPress(){
+        clearTimeout(pressTimer);
+    }
 
-    div.onclick=()=>{
-      stack.push(current);
-      current=folder;
-      render();
-    };
-
-    list.appendChild(div);
-  });
-
-  current.images?.forEach((img,i)=>{
-    let div=document.createElement("div");
-    div.className="item";
-
-    let image=document.createElement("img");
-    image.src=img;
-
-    let del=document.createElement("button");
-    del.textContent="削除";
-    del.className="delete-btn";
-    del.onclick=()=>{
-      current.images.splice(i,1);
-      save();
-      render();
-    };
-
-    div.appendChild(image);
-    div.appendChild(del);
-
-    list.appendChild(div);
-  });
+    btn.parentElement.querySelector(".subArea").appendChild(sub);
 }
 
-function addFolder(){
-  if(current.locked)return;
-
-  let name=prompt("フォルダ名");
-  if(!name)return;
-
-  current.children.push({
-    name:name,
-    children:[],
-    images:[],
-    locked:false,
-    allowImage:true
-  });
-
-  save();
-  render();
+// ---------------------
+// 写真追加（サブフォルダのみ）
+// ---------------------
+function addPhoto(btn){
+    selectedSubFolder = btn.parentElement.querySelector(".imageArea");
+    document.getElementById("imageInput").click();
 }
 
-function triggerPhoto(){
-  document.getElementById("fileInput").click();
-}
+document.getElementById("imageInput").addEventListener("change",function(){
+    const file = this.files[0];
+    if(!file) return;
 
-function addImage(e){
-  let file=e.target.files[0];
-  if(!file)return;
-
-  let reader=new FileReader();
-  reader.onload=function(evt){
-    current.images.push(evt.target.result);
-    save();
-    render();
-  };
-  reader.readAsDataURL(file);
-}
-
-function goBack(){
-  if(stack.length>0){
-    current=stack.pop();
-    render();
-  }
-}
-
-function save(){
-  localStorage.setItem("folderData",JSON.stringify(data));
-}
-
-render();
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        selectedSubFolder.appendChild(img);
+    }
+    reader.readAsDataURL(file);
+});
 </script>
 
 </body>
