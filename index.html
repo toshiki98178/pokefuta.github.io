@@ -21,6 +21,10 @@ body{
   justify-content:space-between;
   align-items:center;
 }
+.header-right{
+  display:flex;
+  gap:8px;
+}
 .list{
   background:white;
 }
@@ -42,11 +46,14 @@ button{
   border-radius:8px;
 }
 button.hidden{
-  visibility:hidden;
+  display:none;
 }
 .back{
   color:#007aff;
   background:none;
+}
+.delete-btn{
+  background:#ff3b30;
 }
 img{
   width:60px;
@@ -61,7 +68,8 @@ img{
 <div class="header">
   <button class="back" onclick="goBack()">←</button>
   <div id="title">日本</div>
-  <div>
+  <div class="header-right">
+    <button id="photoBtn" onclick="triggerPhoto()">📷</button>
     <button id="addBtn" onclick="addFolder()">＋</button>
   </div>
 </div>
@@ -77,39 +85,18 @@ let current=data;
 
 function createInitialData(){
   const structure={
-    "北海道・東北":[
-      "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県"
-    ],
-    "関東":[
-      "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"
-    ],
-    "中部":[
-      "新潟県","富山県","石川県","福井県","山梨県","長野県",
-      "岐阜県","静岡県","愛知県"
-    ],
-    "近畿":[
-      "三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"
-    ],
-    "中国・四国":[
-      "鳥取県","島根県","岡山県","広島県","山口県",
-      "徳島県","香川県","愛媛県","高知県"
-    ],
-    "九州・沖縄":[
-      "福岡県","佐賀県","長崎県","熊本県","大分県",
-      "宮崎県","鹿児島県","沖縄県"
-    ]
+    "北海道・東北":["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県"],
+    "関東":["茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"],
+    "中部":["新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県"],
+    "近畿":["三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"],
+    "中国・四国":["鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県"],
+    "九州・沖縄":["福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
   };
 
   let root={name:"日本",children:[],images:[],locked:true,allowImage:false};
 
   for(let region in structure){
-    let regionFolder={
-      name:region,
-      children:[],
-      images:[],
-      locked:true,
-      allowImage:false
-    };
+    let regionFolder={name:region,children:[],images:[],locked:true,allowImage:false};
 
     structure[region].forEach(pref=>{
       regionFolder.children.push({
@@ -117,7 +104,7 @@ function createInitialData(){
         children:[],
         images:[],
         locked:false,
-        allowImage:false   // ← 都道府県では画像不可
+        allowImage:false
       });
     });
 
@@ -130,42 +117,83 @@ function render(){
   document.getElementById("title").innerText=current.name;
 
   const addBtn=document.getElementById("addBtn");
-  if(current.locked){
-    addBtn.classList.add("hidden");
-  }else{
-    addBtn.classList.remove("hidden");
-  }
+  const photoBtn=document.getElementById("photoBtn");
+
+  addBtn.classList.toggle("hidden", current.locked);
+  photoBtn.classList.toggle("hidden", !current.allowImage);
 
   let list=document.getElementById("list");
   list.innerHTML="";
 
-  current.children?.forEach(folder=>{
+  current.children?.forEach((folder,index)=>{
     let div=document.createElement("div");
     div.className="item";
-    div.innerHTML=`<span>${folder.name}</span><span>></span>`;
+
+    let left=document.createElement("span");
+    left.textContent=folder.name;
+
+    let right=document.createElement("div");
+    right.style.display="flex";
+    right.style.gap="8px";
+
+    let arrow=document.createElement("span");
+    arrow.textContent=">";
+
+    right.appendChild(arrow);
+
+    if(!folder.locked){
+      let del=document.createElement("button");
+      del.textContent="削除";
+      del.className="delete-btn";
+      del.onclick=(e)=>{
+        e.stopPropagation();
+        if(confirm("このフォルダを削除しますか？")){
+          current.children.splice(index,1);
+          save();
+          render();
+        }
+      };
+      right.appendChild(del);
+    }
+
+    div.appendChild(left);
+    div.appendChild(right);
+
     div.onclick=()=>{
       stack.push(current);
       current=folder;
       render();
     };
+
     list.appendChild(div);
   });
 
   current.images?.forEach((img,i)=>{
     let div=document.createElement("div");
     div.className="item";
-    div.innerHTML=`<img src="${img}"><span>削除</span>`;
-    div.onclick=()=>{
+
+    let image=document.createElement("img");
+    image.src=img;
+
+    let del=document.createElement("button");
+    del.textContent="削除";
+    del.className="delete-btn";
+    del.onclick=()=>{
       current.images.splice(i,1);
       save();
       render();
     };
+
+    div.appendChild(image);
+    div.appendChild(del);
+
     list.appendChild(div);
   });
 }
 
 function addFolder(){
   if(current.locked)return;
+
   let name=prompt("フォルダ名");
   if(!name)return;
 
@@ -174,16 +202,18 @@ function addFolder(){
     children:[],
     images:[],
     locked:false,
-    allowImage:true   // ← 作成したフォルダのみ画像OK
+    allowImage:true
   });
 
   save();
   render();
 }
 
-function addImage(e){
-  if(!current.allowImage)return;
+function triggerPhoto(){
+  document.getElementById("fileInput").click();
+}
 
+function addImage(e){
   let file=e.target.files[0];
   if(!file)return;
 
@@ -195,12 +225,6 @@ function addImage(e){
   };
   reader.readAsDataURL(file);
 }
-
-document.body.addEventListener("dblclick",()=>{
-  if(current.allowImage){
-    document.getElementById("fileInput").click();
-  }
-});
 
 function goBack(){
   if(stack.length>0){
