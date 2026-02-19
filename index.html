@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>フォルダ管理</title>
+<title>地域フォルダ管理</title>
 
 <style>
 body{
@@ -13,25 +13,48 @@ body{
     background:#f5f5f5;
 }
 
-button{
+h1{
+    text-align:center;
+}
+
+.region{
+    margin-top:15px;
+}
+
+.region-title{
+    font-size:18px;
+    font-weight:bold;
     padding:10px;
-    margin:5px 0;
-    width:100%;
-    font-size:16px;
+    background:#d0e8ff;
+    border-radius:8px;
 }
 
 .folder{
+    margin:5px 0;
+}
+
+.pref-title{
     background:white;
     padding:10px;
-    margin:5px 0;
     border-radius:8px;
+}
+
+.subArea{
+    margin-left:15px;
+    display:none;
 }
 
 .subfolder{
     background:#e3f2fd;
     padding:8px;
-    margin:5px 0 5px 20px;
+    margin:5px 0;
     border-radius:8px;
+}
+
+button{
+    padding:8px;
+    margin-top:5px;
+    width:100%;
 }
 
 img{
@@ -47,33 +70,90 @@ img{
 </head>
 <body>
 
-<h2>都道府県フォルダ</h2>
-
-<div id="folderArea"></div>
-
-<button onclick="addPrefecture()">都道府県を追加</button>
+<h1>ポケふた</h1>
+<div id="area"></div>
 
 <input type="file" id="imageInput" accept="image/*" class="hidden">
 
 <script>
+
+const regions = {
+    "北海道・東北": ["北海道","青森","岩手","宮城","秋田","山形","福島"],
+    "関東": ["茨城","栃木","群馬","埼玉","千葉","東京","神奈川"],
+    "中部": ["新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知"],
+    "近畿": ["三重","滋賀","京都","大阪","兵庫","奈良","和歌山"],
+    "中国・四国": ["鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知"],
+    "九州・沖縄": ["福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"]
+};
+
 let selectedSubFolder = null;
 
 // ---------------------
-// 都道府県追加
+// 初期生成
 // ---------------------
-function addPrefecture(){
-    const name = prompt("都道府県名を入力");
-    if(!name) return;
+function init(){
+    const areaDiv = document.getElementById("area");
 
-    const div = document.createElement("div");
-    div.className = "folder";
-    div.innerHTML = `
-        <strong>${name}</strong>
-        <button onclick="addSubFolder(this)">サブフォルダ追加</button>
-        <div class="subArea"></div>
-    `;
-    document.getElementById("folderArea").appendChild(div);
+    for(const region in regions){
+
+        const regionDiv = document.createElement("div");
+        regionDiv.className = "region";
+
+        const regionTitle = document.createElement("div");
+        regionTitle.className = "region-title";
+        regionTitle.textContent = "▶ " + region;
+
+        const regionContent = document.createElement("div");
+        regionContent.style.display = "none";
+
+        regionTitle.onclick = function(){
+            if(regionContent.style.display === "none"){
+                regionContent.style.display = "block";
+                regionTitle.textContent = "▼ " + region;
+            }else{
+                regionContent.style.display = "none";
+                regionTitle.textContent = "▶ " + region;
+            }
+        };
+
+        regions[region].forEach(pref => {
+            const folder = document.createElement("div");
+            folder.className = "folder";
+
+            const prefTitle = document.createElement("div");
+            prefTitle.className = "pref-title";
+            prefTitle.textContent = "▶ " + pref;
+
+            const prefContent = document.createElement("div");
+            prefContent.className = "subArea";
+
+            prefTitle.onclick = function(){
+                if(prefContent.style.display === "none"){
+                    prefContent.style.display = "block";
+                    prefTitle.textContent = "▼ " + pref;
+                }else{
+                    prefContent.style.display = "none";
+                    prefTitle.textContent = "▶ " + pref;
+                }
+            };
+
+            prefContent.innerHTML = `
+                <button onclick="addSubFolder(this)">サブフォルダ追加</button>
+                <div class="subArea-inner"></div>
+            `;
+
+            folder.appendChild(prefTitle);
+            folder.appendChild(prefContent);
+            regionContent.appendChild(folder);
+        });
+
+        regionDiv.appendChild(regionTitle);
+        regionDiv.appendChild(regionContent);
+        areaDiv.appendChild(regionDiv);
+    }
 }
+
+window.onload = init;
 
 // ---------------------
 // サブフォルダ追加
@@ -90,8 +170,8 @@ function addSubFolder(btn){
         <div class="imageArea"></div>
     `;
 
-    // 🔴 長押し削除（1秒）
     let pressTimer;
+
     sub.addEventListener("touchstart", startPress);
     sub.addEventListener("mousedown", startPress);
 
@@ -111,11 +191,11 @@ function addSubFolder(btn){
         clearTimeout(pressTimer);
     }
 
-    btn.parentElement.querySelector(".subArea").appendChild(sub);
+    btn.parentElement.querySelector(".subArea-inner").appendChild(sub);
 }
 
 // ---------------------
-// 写真追加（サブフォルダのみ）
+// 写真追加
 // ---------------------
 function addPhoto(btn){
     selectedSubFolder = btn.parentElement.querySelector(".imageArea");
@@ -134,6 +214,7 @@ document.getElementById("imageInput").addEventListener("change",function(){
     }
     reader.readAsDataURL(file);
 });
+
 </script>
 
 </body>
