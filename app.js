@@ -56,8 +56,15 @@ function render() {
       <img src="${c.image}">
       <p>${c.name}</p>
       <p>${c.attribute}</p>
-      <p>${c.dupe}凸</p>
+
+      <div class="dupe-control">
+        <button onclick="changeDupe(${c.id}, -1)">-</button>
+        <span>${c.dupe}凸</span>
+        <button onclick="changeDupe(${c.id}, 1)">+</button>
+      </div>
+
       <p>${c.tags.join(",")}</p>
+
       <button onclick="deleteCharacter(${c.id})">削除</button>
     `;
 
