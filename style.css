@@ -9,6 +9,13 @@ body {
   gap: 10px;
 }
 
+#filter-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
 .card {
   border: 1px solid #ccc;
   padding: 10px;
