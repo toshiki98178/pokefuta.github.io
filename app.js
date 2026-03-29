@@ -110,6 +110,20 @@ function deleteCharacter(id) {
   render();
 }
 
+function changeDupe(id, delta) {
+  const char = characters.find(c => c.id === id);
+  if (!char) return;
+
+  char.dupe += delta;
+
+  // 0〜4に制限
+  if (char.dupe < 0) char.dupe = 0;
+  if (char.dupe > 4) char.dupe = 4;
+
+  saveToLocalStorage();
+  render();
+}
+
 // base64変換
 function toBase64(file) {
   return new Promise(resolve => {
