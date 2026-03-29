@@ -11,6 +11,7 @@ let characters = [];
 // 起動時
 window.onload = () => {
   loadAttributes();
+  loadAttributeFilter();
   loadFromLocalStorage();
   render();
 };
@@ -43,9 +44,13 @@ function render() {
   list.innerHTML = "";
 
   const filterDupe = document.getElementById("filter-dupe").value;
+  const selectedAttrs = getSelectedAttributes();
 
   let filtered = characters.filter(c => {
-    return !filterDupe || c.dupe == filterDupe;
+    const matchDupe = !filterDupe || c.dupe == filterDupe;
+    const matchAttr = selectedAttrs.length === 0 || selectedAttrs.includes(c.attribute);
+
+    return matchDupe && matchAttr;
   });
 
   filtered.forEach(c => {
@@ -54,8 +59,14 @@ function render() {
 
     div.innerHTML = `
       <img src="${c.image}">
-      <p>${c.name}</p>
-      <p>${c.attribute}</p>
+      
+      <input value="${c.name}" onchange="updateField(${c.id}, 'name', this.value)">
+
+      <select onchange="updateField(${c.id}, 'attribute', this.value)">
+        ${ATTRIBUTES.map(a => 
+          `<option value="${a}" ${a === c.attribute ? "selected" : ""}>${a}</option>`
+        ).join("")}
+      </select>
 
       <div class="dupe-control">
         <button onclick="changeDupe(${c.id}, -1)">-</button>
@@ -63,7 +74,8 @@ function render() {
         <button onclick="changeDupe(${c.id}, 1)">+</button>
       </div>
 
-      <p>${c.tags.join(",")}</p>
+      <input value="${c.tags.join(",")}" 
+        onchange="updateTags(${c.id}, this.value)">
 
       <button onclick="deleteCharacter(${c.id})">削除</button>
     `;
@@ -129,6 +141,48 @@ function changeDupe(id, delta) {
 
   saveToLocalStorage();
   render();
+}
+
+function loadAttributeFilter() {
+  const container = document.getElementById("filter-attributes");
+
+  ATTRIBUTES.forEach(attr => {
+    const label = document.createElement("label");
+
+    label.innerHTML = `
+      <input type="checkbox" value="${attr}" onchange="render()">
+      ${attr}
+    `;
+
+    container.appendChild(label);
+  });
+}
+
+function getSelectedAttributes() {
+  const checkboxes = document.querySelectorAll("#filter-attributes input:checked");
+  return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function updateTags(id, value) {
+  const char = characters.find(c => c.id === id);
+  if (!char) return;
+
+  char.tags = value
+    .split(",")
+    .map(t => t.trim())
+    .filter(t => t !== "")
+    .slice(0, 5);
+
+  saveToLocalStorage();
+}
+
+function updateField(id, field, value) {
+  const char = characters.find(c => c.id === id);
+  if (!char) return;
+
+  char[field] = value;
+
+  saveToLocalStorage();
 }
 
 // base64変換
