@@ -1,232 +1,367 @@
+/* iPhone風デザイン */
 body {
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 0;
   padding: 20px;
+  min-height: 100vh;
+  color: #1c1c1e;
 }
 
-#character-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 20px;
+h1 {
+  text-align: center;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-#filters {
+h2 {
+  color: #1c1c1e;
+  font-size: 24px;
+  font-weight: 600;
   margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f8f9fa;
+}
+
+/* 登録フォーム */
+.registration-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.registration-section input,
+.registration-section select,
+.registration-section button {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #f2f2f7;
+  color: #1c1c1e;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.registration-section input:focus,
+.registration-section select:focus {
+  outline: none;
+  background: #e5e5ea;
+  transform: scale(1.02);
+}
+
+.registration-section button {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 0;
+}
+
+.registration-section button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
+}
+
+.registration-section button:active {
+  transform: translateY(0);
+}
+
+
+/* フィルタエリア */
+#filters {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 #filters select {
   margin-right: 15px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #f2f2f7;
+  color: #1c1c1e;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-#filter-attributes {
+#filters select:focus {
+  outline: none;
+  background: #e5e5ea;
+  transform: scale(1.02);
+}
+
+#filter-attributes, #filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 15px;
 }
 
-#filter-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-#filter-tags label {
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 12px;
+#filter-attributes label, #filter-tags label {
+  background: #f2f2f7;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
   cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  border: 2px solid transparent;
 }
 
-#filter-tags label:hover {
-  background-color: #fff3cd;
+#filter-attributes label:hover, #filter-tags label:hover {
+  background: #e5e5ea;
+  transform: scale(1.05);
 }
 
-#filter-tags input[type="checkbox"]:checked + span {
-  background-color: #856404;
+#filter-attributes input[type="checkbox"]:checked + *,
+#filter-tags input[type="checkbox"]:checked + * {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
   color: white;
+  border-color: #007AFF;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+#filter-attributes input[type="checkbox"],
+#filter-tags input[type="checkbox"] {
+  display: none;
+}
+
+#filter-tags div {
+  font-weight: 600;
+  color: #1c1c1e;
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+/* キャラクター一覧 */
+#character-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .list-item {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
-  padding: 10px;
   gap: 15px;
-  background-color: #f9f9f9;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .character-image {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .character-name {
   min-width: 150px;
-  font-weight: bold;
+  font-weight: 600;
+  color: #1c1c1e;
 }
 
 .character-attribute {
   min-width: 60px;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 12px;
   text-align: center;
   font-size: 12px;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* 属性の色分け */
-.attribute-超速,
-.attribute-極速 {
-  background-color: #2196F3; /* 青 */
+/* 属性の色分け - iPhone風グラデーション */
+.attribute-超速, .attribute-極速 {
+  background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
 }
 
-.attribute-超技,
-.attribute-極技 {
-  background-color: #4CAF50; /* 緑 */
+.attribute-超技, .attribute-極技 {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
 }
 
-.attribute-超知,
-.attribute-極知 {
-  background-color: #9C27B0; /* 紫 */
+.attribute-超知, .attribute-極知 {
+  background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%);
 }
 
-.attribute-超力,
-.attribute-極力 {
-  background-color: #F44336; /* 赤 */
+.attribute-超力, .attribute-極力 {
+  background: linear-gradient(135deg, #FF3B30 0%, #FF6482 100%);
 }
 
-.attribute-超体,
-.attribute-極体 {
-  background-color: #FF9800; /* オレンジ */
+.attribute-超体, .attribute-極体 {
+  background: linear-gradient(135deg, #FF9500 0%, #FFCC02 100%);
 }
 
 .character-dupe {
-  min-width: 40px;
+  min-width: 50px;
   text-align: center;
+  font-weight: 600;
+  color: #007AFF;
+  background: rgba(0, 122, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 12px;
 }
 
 .character-tags {
   flex: 1;
   font-size: 14px;
-  color: #666;
+  color: #8e8e93;
 }
 
+/* ボタン */
 .action-buttons {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+}
+
+.edit-btn, .delete-btn, .save-btn, .cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .edit-btn {
-  padding: 5px 10px;
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
 }
 
 .edit-btn:hover {
-  background-color: #1976D2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
 }
 
 .delete-btn {
-  padding: 5px 10px;
-  background-color: #ff4444;
+  background: linear-gradient(135deg, #FF3B30 0%, #FF6482 100%);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
 }
 
 .delete-btn:hover {
-  background-color: #cc0000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
 }
 
-/* 編集モード用スタイル */
+.save-btn {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+  color: white;
+}
+
+.save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
+}
+
+.cancel-btn {
+  background: #8e8e93;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #636366;
+  transform: translateY(-1px);
+}
+
+/* 編集モード */
 .edit-image-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .edit-image-container input[type="file"] {
   font-size: 10px;
-  width: 50px;
+  width: 60px;
+  background: #f2f2f7;
+  border: none;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.edit-name, .edit-dupe, .edit-tags {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #f2f2f7;
+  color: #1c1c1e;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.edit-name:focus, .edit-dupe:focus, .edit-tags:focus {
+  outline: none;
+  background: #e5e5ea;
+  transform: scale(1.02);
 }
 
 .edit-name {
   min-width: 150px;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .edit-dupe {
   min-width: 60px;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
   text-align: center;
 }
 
 .edit-tags {
   flex: 1;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
 }
 
 .edit-buttons {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
-.save-btn {
-  padding: 5px 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
 
-.save-btn:hover {
-  background-color: #45a049;
-}
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
 
-.cancel-btn {
-  padding: 5px 10px;
-  background-color: #757575;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
+  .list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 
-.cancel-btn:hover {
-  background-color: #616161;
+  .character-name, .character-dupe {
+    min-width: auto;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

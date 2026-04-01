@@ -10,23 +10,27 @@
   <h1>ドッカンキャラ管理</h1>
 
   <!-- 登録フォーム -->
-  <h2>キャラ登録</h2>
-  <input type="text" id="name" placeholder="名前">
-  <input type="file" id="image">
+  <div class="registration-section">
+    <h2>キャラ登録</h2>
+    <input type="text" id="name" placeholder="キャラクター名">
+    <input type="file" id="image" accept="image/*">
 
-  <select id="dupe">
-    <option value="0">0凸</option>
-    <option value="1">1凸</option>
-    <option value="2">2凸</option>
-    <option value="3">3凸</option>
-    <option value="4">4凸</option>
-  </select>
+    <select id="dupe">
+      <option value="0">0凸</option>
+      <option value="1">1凸</option>
+      <option value="2">2凸</option>
+      <option value="3">3凸</option>
+      <option value="4">4凸</option>
+    </select>
 
-  <select id="attribute"></select>
+    <select id="attribute">
+      <option value="">属性を選択</option>
+    </select>
 
-  <input type="text" id="tags" placeholder="タグ（カンマ区切り）">
+    <input type="text" id="tags" placeholder="タグ（カンマ区切りで入力）">
 
-  <button onclick="addCharacter()">追加</button>
+    <button onclick="addCharacter()">キャラクターを追加</button>
+  </div>
 
   <!-- フィルタ -->
   <div id="filters">

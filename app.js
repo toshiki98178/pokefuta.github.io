@@ -129,44 +129,6 @@ function render() {
   });
 }
 
-// 追加
-async function addCharacter() {
-  const name = document.getElementById("name").value;
-  const file = document.getElementById("image").files[0];
-  const dupe = parseInt(document.getElementById("dupe").value);
-  const attribute = document.getElementById("attribute").value;
-  const tags = document.getElementById("tags").value
-    .split(",")
-    .map(t => t.trim())
-    .filter(t => t !== "")
-    .slice(0, 5);
-
-  if (!name || !file) {
-    alert("名前と画像は必須");
-    return;
-  }
-
-  const image = await toBase64(file);
-
-  const newChar = {
-    id: Date.now(),
-    name,
-    image,
-    dupe,
-    attribute,
-    tags
-  };
-
-  characters.push(newChar);
-  saveToLocalStorage();
-  loadTagFilter(); // タグフィルタを再読み込み
-  render();
-
-  // 入力リセット
-  document.getElementById("name").value = "";
-  document.getElementById("image").value = "";
-  document.getElementById("tags").value = "";
-}
 
 // 削除
 function deleteCharacter(id) {
@@ -179,6 +141,15 @@ function deleteCharacter(id) {
 
 function loadAttributeFilter() {
   const container = document.getElementById("filter-attributes");
+
+  // タイトルを追加
+  const title = document.createElement("div");
+  title.textContent = "属性絞り込み";
+  title.style.fontWeight = "600";
+  title.style.color = "#1c1c1e";
+  title.style.marginBottom = "8px";
+  title.style.fontSize = "16px";
+  container.appendChild(title);
 
   ATTRIBUTES.forEach(attr => {
     const label = document.createElement("label");
@@ -204,10 +175,12 @@ function loadTagFilter() {
 
   if (allTags.length > 0) {
     const title = document.createElement("div");
-    title.textContent = "タグ絞り込み:";
-    title.style.fontWeight = "bold";
-    title.style.marginTop = "10px";
-    title.style.marginBottom = "5px";
+    title.textContent = "タグ絞り込み";
+    title.style.fontWeight = "600";
+    title.style.color = "#1c1c1e";
+    title.style.marginTop = "15px";
+    title.style.marginBottom = "8px";
+    title.style.fontSize = "16px";
     container.appendChild(title);
 
     allTags.forEach(tag => {
@@ -321,6 +294,50 @@ function cancelEdit(id) {
   delete char.originalData;
 
   render();
+}
+
+// 追加
+async function addCharacter() {
+  const name = document.getElementById("name").value;
+  const file = document.getElementById("image").files[0];
+  const dupe = parseInt(document.getElementById("dupe").value);
+  const attribute = document.getElementById("attribute").value;
+  const tags = document.getElementById("tags").value
+    .split(",")
+    .map(t => t.trim())
+    .filter(t => t !== "")
+    .slice(0, 5);
+
+  if (!name || !file) {
+    alert("名前と画像は必須です");
+    return;
+  }
+
+  if (!attribute) {
+    alert("属性を選択してください");
+    return;
+  }
+
+  const image = await toBase64(file);
+
+  const newChar = {
+    id: Date.now(),
+    name,
+    image,
+    dupe,
+    attribute,
+    tags
+  };
+
+  characters.push(newChar);
+  saveToLocalStorage();
+  loadTagFilter(); // タグフィルタを再読み込み
+  render();
+
+  // 入力リセット
+  document.getElementById("name").value = "";
+  document.getElementById("image").value = "";
+  document.getElementById("tags").value = "";
 }
 
 // base64変換
