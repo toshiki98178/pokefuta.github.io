@@ -4,9 +4,26 @@ body {
 }
 
 #character-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 150px);
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+#filters {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+#filters select {
+  margin-right: 15px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
 }
 
 #filter-attributes {
@@ -16,22 +33,200 @@ body {
   margin-top: 10px;
 }
 
-.card {
+#filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+#filter-tags label {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#filter-tags label:hover {
+  background-color: #fff3cd;
+}
+
+#filter-tags input[type="checkbox"]:checked + span {
+  background-color: #856404;
+  color: white;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
   border: 1px solid #ccc;
   padding: 10px;
+  gap: 15px;
+  background-color: #f9f9f9;
 }
 
-.card img {
-  width: 100%;
+.character-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-.dupe-control {
+.character-name {
+  min-width: 150px;
+  font-weight: bold;
+}
+
+.character-attribute {
+  min-width: 60px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+}
+
+/* 属性の色分け */
+.attribute-超速,
+.attribute-極速 {
+  background-color: #2196F3; /* 青 */
+}
+
+.attribute-超技,
+.attribute-極技 {
+  background-color: #4CAF50; /* 緑 */
+}
+
+.attribute-超知,
+.attribute-極知 {
+  background-color: #9C27B0; /* 紫 */
+}
+
+.attribute-超力,
+.attribute-極力 {
+  background-color: #F44336; /* 赤 */
+}
+
+.attribute-超体,
+.attribute-極体 {
+  background-color: #FF9800; /* オレンジ */
+}
+
+.character-dupe {
+  min-width: 40px;
+  text-align: center;
+}
+
+.character-tags {
+  flex: 1;
+  font-size: 14px;
+  color: #666;
+}
+
+.action-buttons {
   display: flex;
+  gap: 5px;
+}
+
+.edit-btn {
+  padding: 5px 10px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.edit-btn:hover {
+  background-color: #1976D2;
+}
+
+.delete-btn {
+  padding: 5px 10px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #cc0000;
+}
+
+/* 編集モード用スタイル */
+.edit-image-container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 5px;
 }
 
-.dupe-control button {
-  width: 25px;
-  height: 25px;
+.edit-image-container input[type="file"] {
+  font-size: 10px;
+  width: 50px;
+}
+
+.edit-name {
+  min-width: 150px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.edit-dupe {
+  min-width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  text-align: center;
+}
+
+.edit-tags {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.edit-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.save-btn {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+.cancel-btn {
+  padding: 5px 10px;
+  background-color: #757575;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cancel-btn:hover {
+  background-color: #616161;
 }

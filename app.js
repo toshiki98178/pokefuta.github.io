@@ -4,6 +4,13 @@ const ATTRIBUTES = [
   "超体","極体"
 ];
 
+// 属性の並び順
+const ATTRIBUTE_ORDER = [
+  "超速","極速","超技","極技",
+  "超知","極知","超力","極力",
+  "超体","極体"
+];
+
 const STORAGE_KEY = "dokkan_characters";
 
 let characters = [];
@@ -13,6 +20,7 @@ window.onload = () => {
   loadAttributes();
   loadAttributeFilter();
   loadFromLocalStorage();
+  loadTagFilter();
   render();
 };
 
@@ -45,40 +53,77 @@ function render() {
 
   const filterDupe = document.getElementById("filter-dupe").value;
   const selectedAttrs = getSelectedAttributes();
+  const selectedTags = getSelectedTags();
+  const sortBy = document.getElementById("sort-by").value;
 
   let filtered = characters.filter(c => {
     const matchDupe = !filterDupe || c.dupe == filterDupe;
     const matchAttr = selectedAttrs.length === 0 || selectedAttrs.includes(c.attribute);
+    const matchTag = selectedTags.length === 0 || selectedTags.some(tag => c.tags.includes(tag));
 
-    return matchDupe && matchAttr;
+    return matchDupe && matchAttr && matchTag;
   });
+
+  // 並び替え処理
+  if (sortBy) {
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'dupe-desc':
+          return b.dupe - a.dupe;
+        case 'dupe-asc':
+          return a.dupe - b.dupe;
+        case 'name-asc':
+          return a.name.localeCompare(b.name, 'ja');
+        case 'attribute-asc':
+          const aIndex = ATTRIBUTE_ORDER.indexOf(a.attribute);
+          const bIndex = ATTRIBUTE_ORDER.indexOf(b.attribute);
+          return aIndex - bIndex;
+        default:
+          return 0;
+      }
+    });
+  }
 
   filtered.forEach(c => {
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "list-item";
 
-    div.innerHTML = `
-      <img src="${c.image}">
-      
-      <input value="${c.name}" onchange="updateField(${c.id}, 'name', this.value)">
-
-      <select onchange="updateField(${c.id}, 'attribute', this.value)">
-        ${ATTRIBUTES.map(a => 
-          `<option value="${a}" ${a === c.attribute ? "selected" : ""}>${a}</option>`
-        ).join("")}
-      </select>
-
-      <div class="dupe-control">
-        <button onclick="changeDupe(${c.id}, -1)">-</button>
-        <span>${c.dupe}凸</span>
-        <button onclick="changeDupe(${c.id}, 1)">+</button>
-      </div>
-
-      <input value="${c.tags.join(",")}" 
-        onchange="updateTags(${c.id}, this.value)">
-
-      <button onclick="deleteCharacter(${c.id})">削除</button>
-    `;
+    if (c.editing) {
+      // 編集モード
+      div.innerHTML = `
+        <div class="edit-image-container">
+          <img src="${c.image}" class="character-image">
+          <input type="file" id="edit-image-${c.id}" accept="image/*">
+        </div>
+        <input type="text" value="${c.name}" id="edit-name-${c.id}" class="edit-name">
+        <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
+        <select id="edit-dupe-${c.id}" class="edit-dupe">
+          <option value="0" ${c.dupe === 0 ? "selected" : ""}>0凸</option>
+          <option value="1" ${c.dupe === 1 ? "selected" : ""}>1凸</option>
+          <option value="2" ${c.dupe === 2 ? "selected" : ""}>2凸</option>
+          <option value="3" ${c.dupe === 3 ? "selected" : ""}>3凸</option>
+          <option value="4" ${c.dupe === 4 ? "selected" : ""}>4凸</option>
+        </select>
+        <input type="text" value="${c.tags.join(", ")}" id="edit-tags-${c.id}" class="edit-tags">
+        <div class="edit-buttons">
+          <button onclick="saveCharacter(${c.id})" class="save-btn">保存</button>
+          <button onclick="cancelEdit(${c.id})" class="cancel-btn">キャンセル</button>
+        </div>
+      `;
+    } else {
+      // 通常モード
+      div.innerHTML = `
+        <img src="${c.image}" class="character-image">
+        <span class="character-name">${c.name}</span>
+        <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
+        <span class="character-dupe">${c.dupe}凸</span>
+        <span class="character-tags">${c.tags.join(", ")}</span>
+        <div class="action-buttons">
+          <button onclick="editCharacter(${c.id})" class="edit-btn">編集</button>
+          <button onclick="deleteCharacter(${c.id})" class="delete-btn">削除</button>
+        </div>
+      `;
+    }
 
     list.appendChild(div);
   });
@@ -114,6 +159,7 @@ async function addCharacter() {
 
   characters.push(newChar);
   saveToLocalStorage();
+  loadTagFilter(); // タグフィルタを再読み込み
   render();
 
   // 入力リセット
@@ -126,22 +172,10 @@ async function addCharacter() {
 function deleteCharacter(id) {
   characters = characters.filter(c => c.id !== id);
   saveToLocalStorage();
+  loadTagFilter(); // タグフィルタを再読み込み
   render();
 }
 
-function changeDupe(id, delta) {
-  const char = characters.find(c => c.id === id);
-  if (!char) return;
-
-  char.dupe += delta;
-
-  // 0〜4に制限
-  if (char.dupe < 0) char.dupe = 0;
-  if (char.dupe > 4) char.dupe = 4;
-
-  saveToLocalStorage();
-  render();
-}
 
 function loadAttributeFilter() {
   const container = document.getElementById("filter-attributes");
@@ -158,31 +192,135 @@ function loadAttributeFilter() {
   });
 }
 
+// タグフィルタを読み込み
+function loadTagFilter() {
+  const container = document.getElementById("filter-tags");
+
+  // 既存のタグフィルタをクリア
+  container.innerHTML = "";
+
+  // すべてのタグを収集
+  const allTags = getAllTags();
+
+  if (allTags.length > 0) {
+    const title = document.createElement("div");
+    title.textContent = "タグ絞り込み:";
+    title.style.fontWeight = "bold";
+    title.style.marginTop = "10px";
+    title.style.marginBottom = "5px";
+    container.appendChild(title);
+
+    allTags.forEach(tag => {
+      const label = document.createElement("label");
+
+      label.innerHTML = `
+        <input type="checkbox" value="${tag}" onchange="render()">
+        ${tag}
+      `;
+
+      container.appendChild(label);
+    });
+  }
+}
+
+// すべてのタグを収集（重複なし、あいうえお順）
+function getAllTags() {
+  const tagSet = new Set();
+
+  characters.forEach(char => {
+    char.tags.forEach(tag => {
+      if (tag.trim()) {
+        tagSet.add(tag.trim());
+      }
+    });
+  });
+
+  return Array.from(tagSet).sort((a, b) => a.localeCompare(b, 'ja'));
+}
+
 function getSelectedAttributes() {
   const checkboxes = document.querySelectorAll("#filter-attributes input:checked");
   return Array.from(checkboxes).map(cb => cb.value);
 }
 
-function updateTags(id, value) {
+function getSelectedTags() {
+  const checkboxes = document.querySelectorAll("#filter-tags input:checked");
+  return Array.from(checkboxes).map(cb => cb.value);
+}
+
+
+// 編集モード開始
+function editCharacter(id) {
   const char = characters.find(c => c.id === id);
   if (!char) return;
 
-  char.tags = value
+  // 編集前の値をバックアップ
+  char.originalData = {
+    name: char.name,
+    image: char.image,
+    dupe: char.dupe,
+    tags: [...char.tags]
+  };
+
+  char.editing = true;
+  render();
+}
+
+// 編集保存
+async function saveCharacter(id) {
+  const char = characters.find(c => c.id === id);
+  if (!char) return;
+
+  const nameInput = document.getElementById(`edit-name-${id}`);
+  const imageInput = document.getElementById(`edit-image-${id}`);
+  const dupeSelect = document.getElementById(`edit-dupe-${id}`);
+  const tagsInput = document.getElementById(`edit-tags-${id}`);
+
+  // 名前更新
+  char.name = nameInput.value.trim() || char.name;
+
+  // 画像更新（新しい画像が選択された場合）
+  if (imageInput.files[0]) {
+    char.image = await toBase64(imageInput.files[0]);
+  }
+
+  // 凸数更新
+  char.dupe = parseInt(dupeSelect.value);
+
+  // タグ更新
+  char.tags = tagsInput.value
     .split(",")
     .map(t => t.trim())
     .filter(t => t !== "")
     .slice(0, 5);
 
+  // 編集モード終了
+  char.editing = false;
+  delete char.originalData;
+
   saveToLocalStorage();
+  loadTagFilter(); // タグフィルタを再読み込み
+  render();
 }
 
-function updateField(id, field, value) {
+// 編集キャンセル
+function cancelEdit(id) {
   const char = characters.find(c => c.id === id);
   if (!char) return;
 
-  char[field] = value;
+  // 元の値に戻す
+  if (char.originalData) {
+    char.name = char.originalData.name;
+    char.image = char.originalData.image;
+    char.dupe = char.originalData.dupe;
+    char.tags = char.originalData.tags;
+  }
 
-  saveToLocalStorage();
+  // 編集モード終了
+  char.editing = false;
+  delete char.originalData;
+
+  render();
 }
 
 // base64変換

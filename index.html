@@ -9,28 +9,11 @@
 
   <h1>ドッカンキャラ管理</h1>
 
-  <!-- フィルタ -->
-  <div id="filters">
-  　<select id="filter-dupe">
-    　<option value="">凸数すべて</option>
-    　<option value="0">0凸</option>
-    　<option value="1">1凸</option>
-    　<option value="2">2凸</option>
-    　<option value="3">3凸</option>
-    　<option value="4">4凸</option>
-  　</select>
-
-  　<div id="filter-attributes"></div>
-　</div>
-
-  <!-- キャラ一覧 -->
-  <div id="character-list"></div>
-
   <!-- 登録フォーム -->
   <h2>キャラ登録</h2>
   <input type="text" id="name" placeholder="名前">
   <input type="file" id="image">
-  
+
   <select id="dupe">
     <option value="0">0凸</option>
     <option value="1">1凸</option>
@@ -44,6 +27,33 @@
   <input type="text" id="tags" placeholder="タグ（カンマ区切り）">
 
   <button onclick="addCharacter()">追加</button>
+
+  <!-- フィルタ -->
+  <div id="filters">
+  　<select id="filter-dupe">
+    　<option value="">凸数すべて</option>
+    　<option value="0">0凸</option>
+    　<option value="1">1凸</option>
+    　<option value="2">2凸</option>
+    　<option value="3">3凸</option>
+    　<option value="4">4凸</option>
+  　</select>
+
+  　<select id="sort-by" onchange="render()">
+    　<option value="">並び替えなし</option>
+    　<option value="dupe-desc">凸数：高→低</option>
+    　<option value="dupe-asc">凸数：低→高</option>
+    　<option value="name-asc">名前：五十音順</option>
+    　<option value="attribute-asc">属性：あいうえお順</option>
+  　</select>
+
+  　<div id="filter-attributes"></div>
+
+  　<div id="filter-tags"></div>
+　</div>
+
+  <!-- キャラ一覧 -->
+  <div id="character-list"></div>
 
   <script src="app.js"></script>
 </body>
