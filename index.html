@@ -2,16 +2,27 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ドッカン管理">
   <title>ドッカン管理アプリ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>ドッカンキャラ管理</h1>
+  <!-- ヘッダー -->
+  <div class="header">
+    <h1>ドッカンキャラ管理</h1>
+    <button id="register-btn" onclick="toggleRegistration()">＋</button>
+  </div>
 
   <!-- 登録フォーム -->
-  <div class="registration-section">
-    <h2>キャラ登録</h2>
+  <div class="registration-section" id="registration-section" style="display: none;">
+    <div class="registration-header">
+      <h2>キャラ登録</h2>
+      <button class="close-btn" onclick="toggleRegistration()">×</button>
+    </div>
     <input type="text" id="name" placeholder="キャラクター名">
     <input type="file" id="image" accept="image/*">
 

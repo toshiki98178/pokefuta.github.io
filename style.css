@@ -8,13 +8,55 @@ body {
   color: #1c1c1e;
 }
 
+/* ヘッダー */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
 h1 {
-  text-align: center;
   color: white;
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin: 0;
   text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  flex: 1;
+  text-align: center;
+}
+
+/* 登録ボタン（右上） */
+#register-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+#register-btn:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 30px rgba(0, 122, 255, 0.6);
+}
+
+#register-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 h2 {
@@ -33,6 +75,58 @@ h2 {
   margin-bottom: 25px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* 登録フォームのヘッダー */
+.registration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.registration-header h2 {
+  margin: 0;
+}
+
+/* クローズボタン */
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  border: none;
+  background: #8e8e93;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #636366;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+/* スライドアニメーション */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .registration-section input,
@@ -80,21 +174,21 @@ h2 {
 #filters {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 #filters select {
-  margin-right: 15px;
-  padding: 8px 12px;
+  margin-right: 12px;
+  padding: 6px 10px;
   border: none;
   border-radius: 8px;
   background: #f2f2f7;
   color: #1c1c1e;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.2s;
 }
 
@@ -107,15 +201,15 @@ h2 {
 #filter-attributes, #filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 15px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 #filter-attributes label, #filter-tags label {
   background: #f2f2f7;
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
@@ -143,28 +237,34 @@ h2 {
 #filter-tags div {
   font-weight: 600;
   color: #1c1c1e;
-  margin-top: 15px;
-  margin-bottom: 8px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 14px;
 }
 
 /* キャラクター一覧 */
 #character-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .list-item {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* メインの行レイアウト */
+.character-main-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
 }
 
 .list-item:hover {
@@ -173,28 +273,50 @@ h2 {
 }
 
 .character-image {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* キャラクター情報コンテナ */
+.character-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .character-name {
-  min-width: 150px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1c1c1e;
+  font-size: 18px;
+}
+
+.character-tags {
+  font-size: 16px;
+  color: #666;
+}
+
+/* キャラクター統計情報（右側配置） */
+.character-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .character-attribute {
-  min-width: 60px;
-  padding: 6px 12px;
-  border-radius: 12px;
+  min-width: 70px;
+  padding: 8px 16px;
+  border-radius: 16px;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   color: white;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 /* 属性の色分け - iPhone風グラデーション */
@@ -219,35 +341,32 @@ h2 {
 }
 
 .character-dupe {
-  min-width: 50px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   color: #007AFF;
-  background: rgba(0, 122, 255, 0.1);
+  background: rgba(0, 122, 255, 0.15);
   padding: 6px 12px;
   border-radius: 12px;
-}
-
-.character-tags {
-  flex: 1;
   font-size: 14px;
-  color: #8e8e93;
 }
 
 /* ボタン */
 .action-buttons {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 12px;
 }
 
 .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-  padding: 8px 16px;
+  padding: 6px 10px;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   transition: all 0.2s;
+  min-width: 50px;
 }
 
 .edit-btn {
@@ -307,6 +426,23 @@ h2 {
   padding: 4px;
 }
 
+/* 編集情報コンテナ */
+.edit-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 編集統計情報（右側配置） */
+.edit-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
 .edit-name, .edit-dupe, .edit-tags {
   padding: 8px 12px;
   border: none;
@@ -324,27 +460,28 @@ h2 {
 }
 
 .edit-name {
-  min-width: 150px;
   font-weight: 600;
+  width: 100%;
 }
 
 .edit-dupe {
-  min-width: 60px;
   text-align: center;
+  width: 80px;
 }
 
 .edit-tags {
-  flex: 1;
+  width: 100%;
 }
 
 .edit-buttons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  margin-left: 12px;
 }
 
 
-/* レスポンシブデザイン */
+/* レスポンシブデザイン - タブレット */
 @media (max-width: 768px) {
   body {
     padding: 15px;
@@ -363,5 +500,277 @@ h2 {
   .action-buttons {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+/* iPhone対応 - Safe Area対応 */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* iPhone Pro Max / Plus サイズ */
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  /* モバイル用ヘッダー */
+  .header {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  /* モバイル用登録ボタン */
+  #register-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* 登録フォームのヘッダー */
+  .registration-header {
+    margin-bottom: 16px;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+
+  /* フィルタセクションをモバイル用に最適化 */
+  #filters {
+    padding: 16px;
+  }
+
+  #filters select {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+  /* フィルタボタンのサイズをiPhone用に調整 */
+  #filter-attributes label, #filter-tags label {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* キャラクター画像を大きく */
+  .character-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* キャラクター情報を縦並び */
+  .list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 16px;
+  }
+
+  /* モバイル用の上段レイアウト */
+  .character-main-row {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .character-info .character-name {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .character-info .character-tags {
+    font-size: 16px;
+    color: #666;
+  }
+
+  /* モバイル用の統計情報 */
+  .character-stats {
+    margin-left: 0;
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .character-attribute {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .character-dupe {
+    font-size: 16px;
+    padding: 8px 14px;
+  }
+
+  /* モバイル用ボタン（小さく保持） */
+  .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+    min-height: 36px;
+    min-width: 60px;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 8px;
+    margin-left: auto;
+    margin-top: 0;
+  }
+
+  /* 編集モード */
+  .edit-name, .edit-dupe, .edit-tags {
+    padding: 12px 16px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .edit-buttons {
+    width: 100%;
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
+/* iPhone SE / 小さな画面 */
+@media (max-width: 375px) {
+  body {
+    padding: 10px;
+  }
+
+  /* 小画面用ヘッダー */
+  .header {
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  /* 小画面用登録ボタン */
+  #register-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 18px;
+  }
+
+  .registration-section,
+  #filters {
+    padding: 14px;
+  }
+
+  .list-item {
+    padding: 18px;
+  }
+
+  .character-main-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .character-image {
+    width: 85px;
+    height: 85px;
+  }
+
+  .character-info .character-name {
+    font-size: 18px;
+  }
+
+  .character-info .character-tags {
+    font-size: 15px;
+  }
+
+  .character-stats {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .character-attribute {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .character-dupe {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-height: 32px;
+    min-width: 50px;
+  }
+
+  /* より小さなフィルタボタン */
+  #filter-attributes label, #filter-tags label {
+    font-size: 13px;
+    padding: 8px 12px;
+    min-height: 36px;
+  }
+}
+
+/* 横画面対応 */
+@media (max-width: 896px) and (orientation: landscape) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .registration-section,
+  #filters {
+    padding: 16px;
+  }
+
+  .list-item {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+  }
+
+  .character-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .action-buttons {
+    width: auto;
   }
 }

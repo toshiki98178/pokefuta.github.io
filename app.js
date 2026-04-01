@@ -91,36 +91,48 @@ function render() {
     if (c.editing) {
       // 編集モード
       div.innerHTML = `
-        <div class="edit-image-container">
-          <img src="${c.image}" class="character-image">
-          <input type="file" id="edit-image-${c.id}" accept="image/*">
-        </div>
-        <input type="text" value="${c.name}" id="edit-name-${c.id}" class="edit-name">
-        <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
-        <select id="edit-dupe-${c.id}" class="edit-dupe">
-          <option value="0" ${c.dupe === 0 ? "selected" : ""}>0凸</option>
-          <option value="1" ${c.dupe === 1 ? "selected" : ""}>1凸</option>
-          <option value="2" ${c.dupe === 2 ? "selected" : ""}>2凸</option>
-          <option value="3" ${c.dupe === 3 ? "selected" : ""}>3凸</option>
-          <option value="4" ${c.dupe === 4 ? "selected" : ""}>4凸</option>
-        </select>
-        <input type="text" value="${c.tags.join(", ")}" id="edit-tags-${c.id}" class="edit-tags">
-        <div class="edit-buttons">
-          <button onclick="saveCharacter(${c.id})" class="save-btn">保存</button>
-          <button onclick="cancelEdit(${c.id})" class="cancel-btn">キャンセル</button>
+        <div class="character-main-row">
+          <div class="edit-image-container">
+            <img src="${c.image}" class="character-image">
+            <input type="file" id="edit-image-${c.id}" accept="image/*">
+          </div>
+          <div class="edit-info">
+            <input type="text" value="${c.name}" id="edit-name-${c.id}" class="edit-name">
+            <input type="text" value="${c.tags.join(", ")}" id="edit-tags-${c.id}" class="edit-tags">
+          </div>
+          <div class="edit-stats">
+            <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
+            <select id="edit-dupe-${c.id}" class="edit-dupe">
+              <option value="0" ${c.dupe === 0 ? "selected" : ""}>0凸</option>
+              <option value="1" ${c.dupe === 1 ? "selected" : ""}>1凸</option>
+              <option value="2" ${c.dupe === 2 ? "selected" : ""}>2凸</option>
+              <option value="3" ${c.dupe === 3 ? "selected" : ""}>3凸</option>
+              <option value="4" ${c.dupe === 4 ? "selected" : ""}>4凸</option>
+            </select>
+          </div>
+          <div class="edit-buttons">
+            <button onclick="saveCharacter(${c.id})" class="save-btn">保存</button>
+            <button onclick="cancelEdit(${c.id})" class="cancel-btn">キャンセル</button>
+          </div>
         </div>
       `;
     } else {
       // 通常モード
       div.innerHTML = `
-        <img src="${c.image}" class="character-image">
-        <span class="character-name">${c.name}</span>
-        <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
-        <span class="character-dupe">${c.dupe}凸</span>
-        <span class="character-tags">${c.tags.join(", ")}</span>
-        <div class="action-buttons">
-          <button onclick="editCharacter(${c.id})" class="edit-btn">編集</button>
-          <button onclick="deleteCharacter(${c.id})" class="delete-btn">削除</button>
+        <div class="character-main-row">
+          <img src="${c.image}" class="character-image">
+          <div class="character-info">
+            <span class="character-name">${c.name}</span>
+            <span class="character-tags">${c.tags.join(", ")}</span>
+          </div>
+          <div class="character-stats">
+            <span class="character-attribute attribute-${c.attribute}">${c.attribute}</span>
+            <span class="character-dupe">${c.dupe}凸</span>
+          </div>
+          <div class="action-buttons">
+            <button onclick="editCharacter(${c.id})" class="edit-btn">編集</button>
+            <button onclick="deleteCharacter(${c.id})" class="delete-btn">削除</button>
+          </div>
         </div>
       `;
     }
@@ -334,10 +346,8 @@ async function addCharacter() {
   loadTagFilter(); // タグフィルタを再読み込み
   render();
 
-  // 入力リセット
-  document.getElementById("name").value = "";
-  document.getElementById("image").value = "";
-  document.getElementById("tags").value = "";
+  // 登録フォームを閉じる
+  toggleRegistration();
 }
 
 // base64変換
@@ -347,4 +357,29 @@ function toBase64(file) {
     reader.onload = () => resolve(reader.result);
     reader.readAsDataURL(file);
   });
+}
+
+// 登録フォームの表示/非表示を切り替え
+function toggleRegistration() {
+  const section = document.getElementById("registration-section");
+  const btn = document.getElementById("register-btn");
+
+  if (section.style.display === "none") {
+    // 表示する
+    section.style.display = "block";
+    btn.textContent = "−";
+    btn.style.transform = "translateY(-50%) rotate(180deg)";
+  } else {
+    // 非表示にする
+    section.style.display = "none";
+    btn.textContent = "＋";
+    btn.style.transform = "translateY(-50%) rotate(0deg)";
+
+    // フォームをリセット
+    document.getElementById("name").value = "";
+    document.getElementById("image").value = "";
+    document.getElementById("dupe").value = "0";
+    document.getElementById("attribute").value = "";
+    document.getElementById("tags").value = "";
+  }
 }
