@@ -202,19 +202,23 @@ h2 {
 #filter-attributes, #filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 #filter-attributes label, #filter-tags label {
   background: #f2f2f7;
-  border-radius: 16px;
-  padding: 4px 10px;
-  font-size: 12px;
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
   border: 2px solid transparent;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #filter-attributes label:hover, #filter-tags label:hover {
@@ -579,17 +583,71 @@ h2 {
     font-size: 21px;
   }
 
+  .list-item {
+    padding: 20px;
+  }
+
+  /* キャラクター一覧のレイアウト調整 */
+  .character-main-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+
   .character-image {
-    width: 105px;
-    height: 105px;
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+  }
+
+  .character-info {
+    flex: 1;
+    min-width: 0; /* 文字が長い場合の調整 */
   }
 
   .character-info .character-name {
-    font-size: 21px;
+    font-size: 18px;
+    margin-bottom: 6px;
   }
 
-  .list-item {
-    padding: 26px;
+  .character-info .character-tags {
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+
+  /* 右側の統計情報とボタンを縦配置 */
+  .character-stats {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-left: 8px;
+    min-width: auto;
+  }
+
+  .character-attribute {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .character-dupe {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+
+  /* ボタンをコンパクトに */
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+    margin-left: 8px;
+    width: auto;
+  }
+
+  .edit-btn, .delete-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+    min-width: 50px;
   }
 }
 
@@ -674,57 +732,80 @@ h2 {
     gap: 16px;
   }
 
-  /* モバイル用の上段レイアウト */
-  .character-main-row {
-    display: flex;
-    width: 100%;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .character-info .character-name {
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-
-  .character-info .character-tags {
-    font-size: 16px;
-    color: #666;
-  }
-
-  /* モバイル用の統計情報 */
-  .character-stats {
-    margin-left: 0;
-    align-items: flex-start;
-    flex-direction: row;
+  /* レイアウト全体を縦配置に変更 */
+  .list-item {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
     gap: 12px;
   }
 
+  /* 上段：画像と基本情報 */
+  .character-main-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .character-image {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+  }
+
+  .character-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .character-info .character-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .character-info .character-tags {
+    font-size: 15px;
+    color: #666;
+    word-wrap: break-word;
+  }
+
+  /* 下段：統計情報とボタンを横並び */
+  .character-stats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
   .character-attribute {
-    font-size: 14px;
-    padding: 8px 14px;
+    font-size: 13px;
+    padding: 6px 12px;
   }
 
   .character-dupe {
-    font-size: 16px;
-    padding: 8px 14px;
-  }
-
-  /* iPhone 17用アクションボタン - タッチしやすいサイズ */
-  .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-    padding: 10px 16px;
     font-size: 14px;
-    min-height: 44px;
-    min-width: 70px;
-    border-radius: 12px;
+    padding: 6px 10px;
   }
 
+  /* ボタンを右側に配置 */
   .action-buttons {
     flex-direction: row;
     gap: 8px;
     margin-left: auto;
     margin-top: 0;
+    align-items: center;
+  }
+
+  .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+    min-width: 55px;
+    border-radius: 8px;
   }
 
   /* iPhone 17用編集フィールド */
@@ -735,10 +816,21 @@ h2 {
     border-radius: 12px;
   }
 
+  /* 編集モードのボタン配置調整 */
   .edit-buttons {
-    width: 100%;
     flex-direction: row;
-    gap: 12px;
+    gap: 8px;
+    margin-left: auto;
+    margin-top: 8px;
+    width: auto;
+  }
+
+  .save-btn, .cancel-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+    min-width: 55px;
+    border-radius: 8px;
   }
 }
 
@@ -774,10 +866,17 @@ h2 {
     padding: 18px;
   }
 
-  .character-main-row {
+  /* 小画面では縦配置レイアウト */
+  .list-item {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .character-main-row {
+    flex-direction: row;
+    align-items: center;
     gap: 12px;
+    width: 100%;
   }
 
   .character-image {
@@ -793,31 +892,36 @@ h2 {
     font-size: 15px;
   }
 
+  /* 小画面での下段レイアウト */
   .character-stats {
     flex-direction: row;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 0;
+    margin-top: 8px;
   }
 
   .character-attribute {
-    font-size: 13px;
-    padding: 6px 12px;
+    font-size: 12px;
+    padding: 5px 10px;
   }
 
   .character-dupe {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 13px;
+    padding: 5px 8px;
   }
 
   .action-buttons {
     flex-direction: row;
     gap: 6px;
+    margin-left: auto;
   }
 
   .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-    min-height: 32px;
-    min-width: 50px;
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 30px;
+    min-width: 45px;
   }
 
   /* より小さなフィルタボタン */
