@@ -155,13 +155,13 @@ function loadAttributeFilter() {
   const container = document.getElementById("filter-attributes");
 
   // タイトルを追加
-  const title = document.createElement("div");
-  title.textContent = "属性絞り込み";
-  title.style.fontWeight = "600";
-  title.style.color = "#1c1c1e";
-  title.style.marginBottom = "8px";
-  title.style.fontSize = "16px";
-  container.appendChild(title);
+  // const title = document.createElement("div");
+  // title.textContent = "属性絞り込み";
+  // title.style.fontWeight = "600";
+  // title.style.color = "#1c1c1e";
+  // title.style.marginBottom = "8px";
+  // title.style.fontSize = "16px";
+  // container.appendChild(title);
 
   ATTRIBUTES.forEach(attr => {
     const label = document.createElement("label");
@@ -186,14 +186,14 @@ function loadTagFilter() {
   const allTags = getAllTags();
 
   if (allTags.length > 0) {
-    const title = document.createElement("div");
-    title.textContent = "タグ絞り込み";
-    title.style.fontWeight = "600";
-    title.style.color = "#1c1c1e";
-    title.style.marginTop = "15px";
-    title.style.marginBottom = "8px";
-    title.style.fontSize = "16px";
-    container.appendChild(title);
+    // const title = document.createElement("div");
+    // title.textContent = "タグ絞り込み";
+    // title.style.fontWeight = "600";
+    // title.style.color = "#1c1c1e";
+    // title.style.marginTop = "15px";
+    // title.style.marginBottom = "8px";
+    // title.style.fontSize = "16px";
+    // container.appendChild(title);
 
     allTags.forEach(tag => {
       const label = document.createElement("label");

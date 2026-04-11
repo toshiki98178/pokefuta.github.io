@@ -202,23 +202,46 @@ h2 {
 #filter-attributes, #filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.2%;
   margin-top: 12px;
+}
+
+#filter-attributes {
+  flex-wrap: nowrap;
 }
 
 #filter-attributes label, #filter-tags label {
   background: #f2f2f7;
-  border-radius: 12px;
-  padding: 4px 8px;
-  font-size: 11px;
+  border-radius: 0.5em;
+  padding: 0.1em 0.4em;
+  font-size: 0.6em;
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
-  border: 2px solid transparent;
-  min-height: 24px;
+  border: 1px solid transparent;
+  min-height: 0.8em;
+  height: 1.5em;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+}
+
+#filter-attributes label {
+  flex: 0 0 9.8%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#filter-tags label {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 15%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #filter-attributes label:hover, #filter-tags label:hover {
@@ -226,12 +249,136 @@ h2 {
   transform: scale(1.05);
 }
 
-#filter-attributes input[type="checkbox"]:checked + *,
+/* 属性別選択状態 - 速属性（青系） */
+#filter-attributes label:has(input[value="超速"]:checked),
+#filter-attributes label:has(input[value="極速"]:checked) {
+  background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%) !important;
+  color: white !important;
+  border: 2px solid #007AFF !important;
+  box-shadow: 0 3px 12px rgba(0, 122, 255, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* 属性別選択状態 - 技属性（緑系） */
+#filter-attributes label:has(input[value="超技"]:checked),
+#filter-attributes label:has(input[value="極技"]:checked) {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%) !important;
+  color: white !important;
+  border: 2px solid #34C759 !important;
+  box-shadow: 0 3px 12px rgba(52, 199, 89, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* 属性別選択状態 - 知属性（紫系） */
+#filter-attributes label:has(input[value="超知"]:checked),
+#filter-attributes label:has(input[value="極知"]:checked) {
+  background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%) !important;
+  color: white !important;
+  border: 2px solid #AF52DE !important;
+  box-shadow: 0 3px 12px rgba(175, 82, 222, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* 属性別選択状態 - 力属性（赤系） */
+#filter-attributes label:has(input[value="超力"]:checked),
+#filter-attributes label:has(input[value="極力"]:checked) {
+  background: linear-gradient(135deg, #FF3B30 0%, #FF6482 100%) !important;
+  color: white !important;
+  border: 2px solid #FF3B30 !important;
+  box-shadow: 0 3px 12px rgba(255, 59, 48, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* 属性別選択状態 - 体属性（オレンジ系） */
+#filter-attributes label:has(input[value="超体"]:checked),
+#filter-attributes label:has(input[value="極体"]:checked) {
+  background: linear-gradient(135deg, #FF9500 0%, #FFCC02 100%) !important;
+  color: white !important;
+  border: 2px solid #FF9500 !important;
+  box-shadow: 0 3px 12px rgba(255, 149, 0, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* タグの選択状態（従来の青色を維持） */
+#filter-tags label:has(input:checked) {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%) !important;
+  color: white !important;
+  border: 2px solid #007AFF !important;
+  box-shadow: 0 3px 12px rgba(0, 122, 255, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* 従来ブラウザ用（:has()がサポートされていない場合） */
+#filter-attributes input[value="超速"]:checked + *,
+#filter-attributes input[value="極速"]:checked + * {
+  background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%) !important;
+  color: white !important;
+  border: 2px solid #007AFF !important;
+  box-shadow: 0 3px 12px rgba(0, 122, 255, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+#filter-attributes input[value="超技"]:checked + *,
+#filter-attributes input[value="極技"]:checked + * {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%) !important;
+  color: white !important;
+  border: 2px solid #34C759 !important;
+  box-shadow: 0 3px 12px rgba(52, 199, 89, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+#filter-attributes input[value="超知"]:checked + *,
+#filter-attributes input[value="極知"]:checked + * {
+  background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%) !important;
+  color: white !important;
+  border: 2px solid #AF52DE !important;
+  box-shadow: 0 3px 12px rgba(175, 82, 222, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+#filter-attributes input[value="超力"]:checked + *,
+#filter-attributes input[value="極力"]:checked + * {
+  background: linear-gradient(135deg, #FF3B30 0%, #FF6482 100%) !important;
+  color: white !important;
+  border: 2px solid #FF3B30 !important;
+  box-shadow: 0 3px 12px rgba(255, 59, 48, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+#filter-attributes input[value="超体"]:checked + *,
+#filter-attributes input[value="極体"]:checked + * {
+  background: linear-gradient(135deg, #FF9500 0%, #FFCC02 100%) !important;
+  color: white !important;
+  border: 2px solid #FF9500 !important;
+  box-shadow: 0 3px 12px rgba(255, 149, 0, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
 #filter-tags input[type="checkbox"]:checked + * {
-  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-  color: white;
-  border-color: #007AFF;
-  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%) !important;
+  color: white !important;
+  border: 2px solid #007AFF !important;
+  box-shadow: 0 3px 12px rgba(0, 122, 255, 0.4) !important;
+  transform: scale(1.05) !important;
+  font-weight: 600 !important;
+}
+
+/* ホバー時のエフェクト */
+#filter-attributes label:has(input:checked):hover,
+#filter-tags label:has(input:checked):hover {
+  transform: scale(1.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 #filter-attributes input[type="checkbox"],
@@ -680,16 +827,27 @@ h2 {
     min-height: 48px;
   }
 
-  /* iPhone 17用フィルタボタン - 小さくしたサイズ */
+  /* iPhone 17用フィルタボタン - 1行確実収納 */
   #filter-attributes label, #filter-tags label {
-    padding: 6px 10px;
-    font-size: 12px;
-    min-height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    margin-bottom: 4px;
+    padding: 0.05em 0.3em;
+    font-size: 0.55em;
+    min-height: 0.6em;
+    height: 1.2em;
+    margin-bottom: 0.2em;
+  }
+
+  #filter-attributes {
+    flex-wrap: nowrap;
+  }
+
+  #filter-attributes label {
+    flex: 0 0 9.8%;
+  }
+
+  #filter-tags label {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 18%;
   }
 
   /* キャラクター画像を大きく */
@@ -850,11 +1008,26 @@ h2 {
     min-height: 2.2em;
   }
 
-  /* より小さなフィルタボタン */
+  /* より小さなフィルタボタン - 1行強制収納 */
   #filter-attributes label, #filter-tags label {
-    font-size: 10px;
-    padding: 3px 6px;
-    min-height: 22px;
+    font-size: 0.5em;
+    padding: 0.05em 0.25em;
+    min-height: 0.5em;
+    height: 1em;
+  }
+
+  #filter-attributes {
+    flex-wrap: nowrap;
+  }
+
+  #filter-attributes label {
+    flex: 0 0 9.8%;
+  }
+
+  #filter-tags label {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 20%;
   }
 }
 
