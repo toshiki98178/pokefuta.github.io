@@ -212,15 +212,15 @@ h2 {
 
 #filter-attributes label, #filter-tags label {
   background: #f2f2f7;
-  border-radius: 0.5em;
-  padding: 0.1em 0.4em;
-  font-size: 0.6em;
+  border-radius: 0.6em;
+  padding: 0.2em 0.4em;
+  font-size: 0.65em;
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
   border: 1px solid transparent;
-  min-height: 0.8em;
-  height: 1.5em;
+  min-height: 1.2em;
+  height: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -829,10 +829,10 @@ h2 {
 
   /* iPhone 17用フィルタボタン - 1行確実収納 */
   #filter-attributes label, #filter-tags label {
-    padding: 0.05em 0.3em;
-    font-size: 0.55em;
-    min-height: 0.6em;
-    height: 1.2em;
+    padding: 0.15em 0.3em;
+    font-size: 0.6em;
+    min-height: 1em;
+    height: 1.6em;
     margin-bottom: 0.2em;
   }
 
@@ -1010,10 +1010,10 @@ h2 {
 
   /* より小さなフィルタボタン - 1行強制収納 */
   #filter-attributes label, #filter-tags label {
-    font-size: 0.5em;
-    padding: 0.05em 0.25em;
-    min-height: 0.5em;
-    height: 1em;
+    font-size: 0.55em;
+    padding: 0.1em 0.25em;
+    min-height: 0.8em;
+    height: 1.3em;
   }
 
   #filter-attributes {
