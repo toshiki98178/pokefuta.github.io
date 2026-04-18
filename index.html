@@ -2,75 +2,64 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ドッカン管理">
-  <meta name="theme-color" content="#667eea">
-  <title>ドッカン管理アプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポケふた管理</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <h1>ポケふた管理</h1>
+    <div id="progress" class="progress"></div>
+  </header>
 
-  <!-- ヘッダー -->
-  <div class="header">
-    <h1>ドッカンキャラ管理</h1>
-    <button id="register-btn" onclick="toggleRegistration()">＋</button>
-  </div>
+  <main class="container">
+    <div id="summary" class="summary"></div>
 
-  <!-- 登録フォーム -->
-  <div class="registration-section" id="registration-section" style="display: none;">
-    <div class="registration-header">
-      <h2>キャラ登録</h2>
-      <button class="close-btn" onclick="toggleRegistration()">×</button>
+    <div class="toolbar">
+      <button id="backBtn" class="hidden">← 戻る</button>
+      <button id="addBtn" class="hidden">＋ 新しいポケふた</button>
     </div>
-    <input type="text" id="name" placeholder="キャラクター名">
-    <input type="file" id="image" accept="image/*">
 
-    <select id="dupe">
-      <option value="0">0凸</option>
-      <option value="1">1凸</option>
-      <option value="2">2凸</option>
-      <option value="3">3凸</option>
-      <option value="4">4凸</option>
-    </select>
+    <ul id="list" class="list"></ul>
 
-    <select id="attribute">
-      <option value="">属性を選択</option>
-    </select>
+    <section id="formPanel" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2 id="formTitle">ポケふたを登録</h2>
+        <form id="futaForm">
+          <label>
+            <span>名前</span>
+            <input type="text" id="name" required maxlength="50" placeholder="ポケふたの名前">
+          </label>
 
-    <input type="text" id="tags" placeholder="タグ（カンマ区切りで入力）">
+          <label>
+            <span>訪問日</span>
+            <input type="date" id="date">
+          </label>
 
-    <button onclick="addCharacter()">キャラクターを追加</button>
-  </div>
+          <label>
+            <span>写真</span>
+            <input type="file" id="photo" accept="image/*">
+          </label>
 
-  <!-- フィルタ -->
-  <div id="filters">
-  　<select id="filter-dupe">
-    　<option value="">凸数すべて</option>
-    　<option value="0">0凸</option>
-    　<option value="1">1凸</option>
-    　<option value="2">2凸</option>
-    　<option value="3">3凸</option>
-    　<option value="4">4凸</option>
-  　</select>
+          <div id="imagePreview" class="image-preview hidden">
+            <img id="previewImage" alt="写真プレビュー">
+          </div>
 
-  　<select id="sort-by" onchange="render()">
-    　<option value="">並び替えなし</option>
-    　<option value="dupe-desc">凸数：高→低</option>
-    　<option value="dupe-asc">凸数：低→高</option>
-    　<option value="name-asc">名前：五十音順</option>
-    　<option value="attribute-asc">属性：あいうえお順</option>
-  　</select>
+          <div class="form-buttons">
+            <button type="button" id="cancelBtn" class="secondary">キャンセル</button>
+            <button type="submit" class="primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </section>
 
-  　<div id="filter-attributes"></div>
+    <section id="imagePreviewModal" class="image-preview-modal hidden">
+      <div class="image-preview-overlay" id="imagePreviewOverlay">
+        <img id="largeImage" class="large-image" alt="画像プレビュー">
+      </div>
+    </section>
+  </main>
 
-  　<div id="filter-tags"></div>
-　</div>
-
-  <!-- キャラ一覧 -->
-  <div id="character-list"></div>
-
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
