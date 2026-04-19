@@ -20,6 +20,9 @@ let pendingPhotoData = '';
 const listEl = document.getElementById('list');
 const backBtn = document.getElementById('backBtn');
 const addBtn = document.getElementById('addBtn');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const importFile = document.getElementById('importFile');
 const formPanel = document.getElementById('formPanel');
 const summaryEl = document.getElementById('summary');
 const progressEl = document.getElementById('progress');
@@ -163,6 +166,67 @@ function closeImagePreview() {
   document.body.classList.remove('no-scroll');
 }
 
+function exportData() {
+  const data = getData();
+  const jsonData = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonData], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pokefuta-data-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const file = importFile.files[0];
+  if (!file) {
+    alert('ファイルを選択してください。');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const importedData = JSON.parse(event.target.result);
+
+      // データの検証
+      if (typeof importedData !== 'object' || importedData === null) {
+        throw new Error('無効なJSON形式です。');
+      }
+
+      // 現在のデータとマージするか確認
+      const currentData = getData();
+      const hasCurrentData = Object.keys(currentData).length > 0;
+
+      let finalData = importedData;
+
+      if (hasCurrentData) {
+        const choice = confirm(
+          '現在のデータが存在します。上書きしますか？\n\n' +
+          '「OK」: インポートデータを上書き\n' +
+          '「キャンセル」: キャンセル'
+        );
+        if (!choice) {
+          return;
+        }
+      }
+
+      saveData(finalData);
+      alert('データをインポートしました。');
+      render();
+
+    } catch (error) {
+      alert('ファイルの読み込みに失敗しました。JSON形式のファイルを選択してください。\n\nエラー: ' + error.message);
+    }
+  };
+
+  reader.readAsText(file);
+}
+
 function buildListItem(text, detail, extraClass = '') {
   const li = document.createElement('li');
   li.className = `list-item ${extraClass}`;
@@ -241,6 +305,11 @@ function render() {
         image.className = 'item-image';
         image.addEventListener('click', () => openImagePreview(item.photo, item.name));
         li.appendChild(image);
+      } else {
+        const noImage = document.createElement('div');
+        noImage.className = 'item-image no-image';
+        noImage.textContent = 'No Image';
+        li.appendChild(noImage);
       }
 
       const content = document.createElement('div');
@@ -343,6 +412,18 @@ cancelBtn.addEventListener('click', () => {
 
 imagePreviewOverlay.addEventListener('click', () => {
   closeImagePreview();
+});
+
+exportBtn.addEventListener('click', () => {
+  exportData();
+});
+
+importBtn.addEventListener('click', () => {
+  importFile.click();
+});
+
+importFile.addEventListener('change', () => {
+  importData();
 });
 
 addBtn.addEventListener('click', () => {

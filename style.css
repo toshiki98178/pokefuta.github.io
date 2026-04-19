@@ -22,6 +22,30 @@ header h1 {
   font-size: 1.5rem;
 }
 
+.header-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.export-btn,
+.import-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.export-btn:hover,
+.import-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .progress {
   font-size: 0.95rem;
   opacity: 0.9;
@@ -126,6 +150,17 @@ button:disabled {
   flex-shrink: 0;
 }
 
+.no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #999;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 2px dashed #ddd;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -139,11 +174,13 @@ button:disabled {
 
 .modal-content {
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
   background: white;
   border-radius: 18px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 2px 18px rgba(0, 0, 0, 0.16);
+  margin: 20px;
+  box-sizing: border-box;
 }
 
 .modal-content h2 {
@@ -169,6 +206,7 @@ input[type="file"] {
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 0.95rem;
+  box-sizing: border-box;
 }
 
 .checkbox {
@@ -198,6 +236,12 @@ input[type="file"] {
 }
 
 @media (max-width: 520px) {
+  .modal-content {
+    margin: 10px;
+    padding: 16px;
+    max-width: calc(100vw - 20px);
+  }
+
   .toolbar {
     flex-direction: column;
   }

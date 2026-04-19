@@ -9,6 +9,11 @@
 <body>
   <header>
     <h1>ポケふた管理</h1>
+    <div class="header-actions">
+      <button id="exportBtn" class="export-btn">📥 エクスポート</button>
+      <button id="importBtn" class="import-btn">📤 インポート</button>
+      <input type="file" id="importFile" accept=".json" style="display: none;">
+    </div>
     <div id="progress" class="progress"></div>
   </header>
 
