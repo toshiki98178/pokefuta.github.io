@@ -37,6 +37,23 @@ const cancelBtn = document.getElementById('cancelBtn');
 const imagePreviewModal = document.getElementById('imagePreviewModal');
 const largeImage = document.getElementById('largeImage');
 const imagePreviewOverlay = document.getElementById('imagePreviewOverlay');
+const cropModal = document.getElementById('cropModal');
+const cropCanvas = document.getElementById('cropCanvas');
+const cropSizeSlider = document.getElementById('cropSizeSlider');
+const cropApplyBtn = document.getElementById('cropApplyBtn');
+const cropCancelBtn = document.getElementById('cropCancelBtn');
+
+let originalImage = new Image();
+let cropState = {
+  x: 0,
+  y: 0,
+  size: 0,
+  displayWidth: 0,
+  displayHeight: 0,
+  dragging: false,
+  dragOffsetX: 0,
+  dragOffsetY: 0
+};
 
 function getData() {
   return JSON.parse(localStorage.getItem('poke') || '{}');
@@ -165,6 +182,126 @@ function closeImagePreview() {
   imagePreviewModal.classList.add('hidden');
   document.body.classList.remove('no-scroll');
 }
+
+function clampCrop() {
+  const maxX = cropState.displayWidth - cropState.size;
+  const maxY = cropState.displayHeight - cropState.size;
+  cropState.x = Math.min(Math.max(cropState.x, 0), Math.max(maxX, 0));
+  cropState.y = Math.min(Math.max(cropState.y, 0), Math.max(maxY, 0));
+}
+
+function drawCropCanvas() {
+  const ctx = cropCanvas.getContext('2d');
+  ctx.clearRect(0, 0, cropState.displayWidth, cropState.displayHeight);
+  ctx.drawImage(originalImage, 0, 0, cropState.displayWidth, cropState.displayHeight);
+
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+  ctx.fillRect(0, 0, cropState.displayWidth, cropState.displayHeight);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.fillRect(cropState.x, cropState.y, cropState.size, cropState.size);
+}
+
+function openCropModal() {
+  cropModal.classList.remove('hidden');
+  document.body.classList.add('no-scroll');
+
+  const maxWidth = Math.min(window.innerWidth - 64, originalImage.width, 700);
+  const scale = maxWidth / originalImage.width;
+  cropState.displayWidth = Math.round(originalImage.width * scale);
+  cropState.displayHeight = Math.round(originalImage.height * scale);
+  cropState.size = Math.round(Math.min(cropState.displayWidth, cropState.displayHeight) * 0.8);
+  cropState.x = Math.round((cropState.displayWidth - cropState.size) / 2);
+  cropState.y = Math.round((cropState.displayHeight - cropState.size) / 2);
+
+  cropCanvas.width = cropState.displayWidth;
+  cropCanvas.height = cropState.displayHeight;
+  cropSizeSlider.value = Math.round((cropState.size / Math.min(cropState.displayWidth, cropState.displayHeight)) * 100);
+  drawCropCanvas();
+}
+
+function closeCropModal() {
+  cropModal.classList.add('hidden');
+  document.body.classList.remove('no-scroll');
+}
+
+function applyCrop() {
+  const ratio = originalImage.width / cropState.displayWidth;
+  const sx = Math.round(cropState.x * ratio);
+  const sy = Math.round(cropState.y * ratio);
+  const size = Math.round(cropState.size * ratio);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(originalImage, sx, sy, size, size, 0, 0, size, size);
+
+  pendingPhotoData = canvas.toDataURL('image/jpeg', 0.92);
+  previewImage.src = pendingPhotoData;
+  previewContainer.classList.remove('hidden');
+  closeCropModal();
+}
+
+function setCropSelectionSize(value) {
+  const minEdge = Math.min(cropState.displayWidth, cropState.displayHeight);
+  const newSize = Math.max(40, Math.round((minEdge * value) / 100));
+  const centerX = cropState.x + cropState.size / 2;
+  const centerY = cropState.y + cropState.size / 2;
+  cropState.size = newSize;
+  cropState.x = Math.round(centerX - newSize / 2);
+  cropState.y = Math.round(centerY - newSize / 2);
+  clampCrop();
+  drawCropCanvas();
+}
+
+function isPointerInCropArea(clientX, clientY) {
+  const rect = cropCanvas.getBoundingClientRect();
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
+  return x >= cropState.x && x <= cropState.x + cropState.size && y >= cropState.y && y <= cropState.y + cropState.size;
+}
+
+cropCanvas.addEventListener('pointerdown', event => {
+  if (!isPointerInCropArea(event.clientX, event.clientY)) {
+    return;
+  }
+  event.preventDefault();
+  const rect = cropCanvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  cropState.dragging = true;
+  cropState.dragOffsetX = x - cropState.x;
+  cropState.dragOffsetY = y - cropState.y;
+});
+
+window.addEventListener('pointermove', event => {
+  if (!cropState.dragging) {
+    return;
+  }
+  const rect = cropCanvas.getBoundingClientRect();
+  cropState.x = event.clientX - rect.left - cropState.dragOffsetX;
+  cropState.y = event.clientY - rect.top - cropState.dragOffsetY;
+  clampCrop();
+  drawCropCanvas();
+});
+
+window.addEventListener('pointerup', () => {
+  cropState.dragging = false;
+});
+
+cropSizeSlider.addEventListener('input', () => {
+  setCropSelectionSize(cropSizeSlider.value);
+});
+
+cropApplyBtn.addEventListener('click', applyCrop);
+cropCancelBtn.addEventListener('click', () => {
+  pendingPhotoData = '';
+  photoInput.value = '';
+  previewImage.src = '';
+  previewContainer.classList.add('hidden');
+  closeCropModal();
+});
 
 function exportData() {
   const data = getData();
@@ -394,9 +531,12 @@ photoInput.addEventListener('change', () => {
 
   const reader = new FileReader();
   reader.onload = () => {
+    originalImage = new Image();
+    originalImage.onload = () => {
+      openCropModal();
+    };
+    originalImage.src = reader.result;
     pendingPhotoData = reader.result;
-    previewImage.src = pendingPhotoData;
-    previewContainer.classList.remove('hidden');
   };
   reader.readAsDataURL(file);
 });

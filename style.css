@@ -187,6 +187,46 @@ button:disabled {
   margin: 0 0 16px;
 }
 
+.crop-wrapper {
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  margin-bottom: 16px;
+}
+
+#cropCanvas {
+  max-width: 100%;
+  border: 1px solid #ddd;
+  touch-action: none;
+}
+
+.crop-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.crop-buttons label {
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.crop-buttons input[type="range"] {
+  width: 100%;
+}
+
+.crop-buttons button {
+  flex: 0 0 auto;
+}
+
+.crop-modal-content {
+  max-width: 700px;
+}
+
 label {
   display: grid;
   gap: 8px;

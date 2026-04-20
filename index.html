@@ -58,6 +58,23 @@
       </div>
     </section>
 
+    <section id="cropModal" class="modal-overlay hidden">
+      <div class="modal-content crop-modal-content">
+        <h2>画像を正方形にトリミング</h2>
+        <div class="crop-wrapper">
+          <canvas id="cropCanvas"></canvas>
+        </div>
+        <div class="crop-buttons">
+          <label>
+            トリミングサイズ
+            <input type="range" id="cropSizeSlider" min="10" max="100" value="80">
+          </label>
+          <button type="button" id="cropApplyBtn" class="primary">適用</button>
+          <button type="button" id="cropCancelBtn" class="secondary">キャンセル</button>
+        </div>
+      </div>
+    </section>
+
     <section id="imagePreviewModal" class="image-preview-modal hidden">
       <div class="image-preview-overlay" id="imagePreviewOverlay">
         <img id="largeImage" class="large-image" alt="画像プレビュー">
