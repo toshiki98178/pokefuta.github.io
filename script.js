@@ -12,7 +12,8 @@ const state = {
   region: null,
   prefecture: null,
   editIndex: null,
-  formMode: 'add'
+  formMode: 'add',
+  viewMode: 'list'
 };
 
 let pendingPhotoData = '';
@@ -20,6 +21,7 @@ let pendingPhotoData = '';
 const listEl = document.getElementById('list');
 const backBtn = document.getElementById('backBtn');
 const addBtn = document.getElementById('addBtn');
+const viewModeBtn = document.getElementById('viewModeBtn');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
@@ -386,8 +388,13 @@ function render() {
   listEl.innerHTML = '';
   formPanel.classList.add('hidden');
   addBtn.classList.toggle('hidden', state.level !== 'futa');
+  viewModeBtn.classList.toggle('hidden', state.level !== 'futa');
+  viewModeBtn.textContent = state.viewMode === 'gallery' ? '📄 リスト' : '📷 ギャラリー';
+  viewModeBtn.classList.toggle('view-mode-btn', true);
   backBtn.classList.toggle('hidden', state.level === 'region');
   backBtn.disabled = false;
+  listEl.classList.toggle('gallery-grid', state.level === 'futa' && state.viewMode === 'gallery');
+  listEl.classList.toggle('list', !(state.level === 'futa' && state.viewMode === 'gallery'));
 
   if (state.level === 'region') {
     setSummary('地域を選択してください');
@@ -428,6 +435,77 @@ function render() {
       empty.className = 'empty-state';
       empty.textContent = 'まだ登録されたポケふたはありません。新しいポケふたを追加してください。';
       listEl.appendChild(empty);
+      return;
+    }
+
+    if (state.viewMode === 'gallery') {
+      const photoItems = items
+        .map((item, index) => ({ item, index }))
+        .filter(entry => entry.item.photo);
+
+      if (photoItems.length === 0) {
+        const empty = document.createElement('li');
+        empty.className = 'empty-state';
+        empty.textContent = '写真付きのポケふたがありません。リスト表示に戻して確認してください。';
+        listEl.appendChild(empty);
+        return;
+      }
+
+      photoItems.forEach(({ item, index }) => {
+        const li = document.createElement('li');
+        li.className = 'gallery-item';
+
+        const thumb = document.createElement('div');
+        thumb.className = 'gallery-thumb';
+        const image = document.createElement('img');
+        image.src = item.photo;
+        image.alt = item.name;
+        thumb.appendChild(image);
+        thumb.addEventListener('click', () => openImagePreview(item.photo, item.name));
+        li.appendChild(thumb);
+
+        const info = document.createElement('div');
+        info.className = 'gallery-info';
+
+        const title = document.createElement('div');
+        title.className = 'gallery-title';
+        title.textContent = item.name;
+
+        const status = document.createElement('div');
+        status.className = 'gallery-status';
+        status.textContent = item.date ? `訪問済み - ${item.date}` : '未訪問';
+
+        info.appendChild(title);
+        info.appendChild(status);
+        li.appendChild(info);
+
+        const actions = document.createElement('div');
+        actions.className = 'gallery-actions';
+
+        const editButton = document.createElement('button');
+        editButton.textContent = '編集';
+        editButton.type = 'button';
+        editButton.className = 'action-button';
+        editButton.addEventListener('click', () => openForm('edit', index));
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '削除';
+        deleteButton.type = 'button';
+        deleteButton.className = 'action-button secondary';
+        deleteButton.addEventListener('click', () => {
+          if (confirm('このポケふたを削除しますか？')) {
+            const data = getData();
+            data[state.prefecture].splice(index, 1);
+            saveData(data);
+            render();
+          }
+        });
+
+        actions.appendChild(editButton);
+        actions.appendChild(deleteButton);
+        li.appendChild(actions);
+        listEl.appendChild(li);
+      });
       return;
     }
 
@@ -564,6 +642,11 @@ importBtn.addEventListener('click', () => {
 
 importFile.addEventListener('change', () => {
   importData();
+});
+
+viewModeBtn.addEventListener('click', () => {
+  state.viewMode = state.viewMode === 'gallery' ? 'list' : 'gallery';
+  render();
 });
 
 addBtn.addEventListener('click', () => {
