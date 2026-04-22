@@ -254,6 +254,8 @@ button:disabled {
   box-shadow: 0 2px 18px rgba(0, 0, 0, 0.16);
   margin: 20px;
   box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -298,6 +300,8 @@ button:disabled {
 
 .crop-modal-content {
   max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 label {
