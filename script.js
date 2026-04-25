@@ -32,6 +32,7 @@ const formTitle = document.getElementById('formTitle');
 const futaForm = document.getElementById('futaForm');
 const nameInput = document.getElementById('name');
 const dateInput = document.getElementById('date');
+const cityInput = document.getElementById('city');
 const photoInput = document.getElementById('photo');
 const previewContainer = document.getElementById('imagePreview');
 const previewImage = document.getElementById('previewImage');
@@ -147,6 +148,7 @@ function openForm(mode, index = null) {
 
     nameInput.value = item.name;
     dateInput.value = item.date || '';
+    cityInput.value = item.city || '';
     pendingPhotoData = item.photo || '';
 
     if (pendingPhotoData) {
@@ -473,7 +475,8 @@ function render() {
 
         const status = document.createElement('div');
         status.className = 'gallery-status';
-        status.textContent = item.date ? `訪問済み - ${item.date}` : '未訪問';
+        const cityText = item.city ? ` - ${item.city}` : '';
+        status.textContent = item.date ? `${item.date}${cityText}` : '未訪問';
 
         info.appendChild(title);
         info.appendChild(status);
@@ -536,7 +539,8 @@ function render() {
 
       const status = document.createElement('div');
       status.className = 'item-status';
-      status.textContent = item.date ? `訪問済み - ${item.date}` : '未訪問';
+      const cityText = item.city ? ` - ${item.city}` : '';
+      status.textContent = item.date ? `${item.date}${cityText}` : '未訪問';
 
       content.appendChild(title);
       content.appendChild(status);
@@ -575,6 +579,7 @@ function render() {
 function saveForm() {
   const name = nameInput.value.trim();
   const date = dateInput.value;
+  const city = cityInput.value.trim();
   const photo = pendingPhotoData;
 
   if (!name) {
@@ -584,7 +589,7 @@ function saveForm() {
 
   const data = getData();
   const items = data[state.prefecture] || [];
-  const record = { name, date, photo };
+  const record = { name, date, city, photo };
 
   if (state.formMode === 'edit' && state.editIndex !== null) {
     items[state.editIndex] = record;
